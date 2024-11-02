@@ -1,6 +1,4 @@
 "use client";
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -16,8 +14,14 @@ import { getAllEpisodes } from "@/services/episode.service";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 
-export default function AppSidebar({ getActiveEpisode }: any) {
-  const [isActiveEpisodeId, setIsActiveEpisodeId] = useState(null);
+interface AppSidebarProps {
+  getActiveEpisode: (episodeId: number, episodeName: string) => void;
+}
+
+export default function AppSidebar({ getActiveEpisode }: AppSidebarProps) {
+  const [isActiveEpisodeId, setIsActiveEpisodeId] = useState<number | null>(
+    null
+  );
 
   const {
     data: allEpisodes,
