@@ -13,15 +13,24 @@ import {
 } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { getAllEpisodes } from "@/services/episode.service";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 export default function AppSidebar({ getActiveEpisode }: any) {
   const [isActiveEpisodeId, setIsActiveEpisodeId] = useState(null);
 
-  const { data: allEpisodes } = useQuery({
+  const {
+    data: allEpisodes,
+    isFetching,
+    refetch,
+  } = useQuery({
     queryKey: ["allEpisodes"],
     queryFn: () => getAllEpisodes(),
   });
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <Sidebar>
@@ -30,29 +39,33 @@ export default function AppSidebar({ getActiveEpisode }: any) {
           <SidebarGroupLabel>Episodes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {allEpisodes?.results?.map((item: any) => (
-                <SidebarMenuItem
-                  key={item?.id}
-                  onClick={() => {
-                    getActiveEpisode(item?.id,item?.name), setIsActiveEpisodeId(item?.id);
-                  }}
-                  className="cursor-pointer py-2"
-                >
-                  <SidebarMenuButton
-                    asChild
-                    isActive={item?.id === isActiveEpisodeId ? true : false}
-                  >
-                    <span>{item?.name}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {isFetching
+                ? Array.from({ length: 20 }, (v, i) => (
+                    <SidebarMenuItem key={i} className="py-2">
+                      <Skeleton className="h-[40px] w-[190px] rounded-xl" />{" "}
+                    </SidebarMenuItem>
+                  ))
+                : allEpisodes?.results?.map((item: any) => (
+                    <SidebarMenuItem
+                      key={item?.id}
+                      onClick={() => {
+                        getActiveEpisode(item?.id, item?.name),
+                          setIsActiveEpisodeId(item?.id);
+                      }}
+                      className="cursor-pointer py-2"
+                    >
+                      <SidebarMenuButton
+                        asChild
+                        isActive={item?.id === isActiveEpisodeId ? true : false}
+                      >
+                        <span>{item?.name}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-
-
-    
   );
 }
