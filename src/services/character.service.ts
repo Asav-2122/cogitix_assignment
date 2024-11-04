@@ -2,10 +2,10 @@ import axios from "axios";
 
 
 
-export const getAllCharacter = async () => {
+export const getAllCharacter = async (activePage:number) => {
   try {
-    const res = await axios.get("https://rickandmortyapi.com/api/character");
-    return res?.data?.results;
+    const res = await axios.get("https://rickandmortyapi.com/api/character/?page="+activePage);
+    return res?.data;
   } catch (error) {
     throw error;
   }

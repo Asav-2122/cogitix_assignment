@@ -10,24 +10,10 @@ export default function Home() {
   const [clickedEpisodeId, setClickedEpisodeId] = useState<number | null>(null);
   const [episodeName, setEpisodeName] = useState<string>("All Character");
 
-  const {
-    data: allCharachterData,
-    isFetching,
-    refetch,
-  } = useQuery({
-    queryKey: ["allCharacter", clickedEpisodeId],
-    queryFn: () =>
-      clickedEpisodeId ? getSingleEpisode(clickedEpisodeId) : getAllCharacter(),
-  });
-
   const getActiveEpisode = (episodeId: number, episodeName: string) => {
     setClickedEpisodeId(episodeId);
     setEpisodeName(episodeName);
   };
-
-  useEffect(() => {
-    refetch();
-  }, []);
 
   return (
     <div className="flex flex-row justify-evenly">
@@ -37,9 +23,8 @@ export default function Home() {
 
       {/* Right Side Layout  */}
       <RightSideLayout
-        isFetching={isFetching}
+        clickedEpisodeId={clickedEpisodeId}
         episodeName={episodeName}
-        allCharachterData={allCharachterData}
       />
     </div>
   );
